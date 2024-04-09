@@ -1,30 +1,45 @@
-import { StyleSheet } from 'react-native';
+import { Suspense } from 'react';
+import { SafeAreaView, StyleSheet } from 'react-native';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+import { Text } from 'tamagui';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import FoodList from '@/components/FoodList';
+import type { TabsQuery } from '@/relay/__generated__/TabsQuery.graphql';
 
-export default function TabOneScreen() {
+const FoodListDataQuery = graphql`
+  query TabsQuery {
+    ...FoodListFragment
+  }
+`;
+
+export default function ListScreen() {
+  const queryData = useLazyLoadQuery<TabsQuery>(FoodListDataQuery, {});
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Suspense fallback={<Text>Loading...</Text>}>
+        <FoodList queryData={queryData} />
+      </Suspense>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexGrow: 1,
+    width: '100%',
+    flexDirection: 'column',
+    marginVertical: 15,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
   },
   separator: {
-    marginVertical: 30,
+    marginTop: 15,
+    marginBottom: 25,
     height: 1,
     width: '80%',
   },
