@@ -1,5 +1,4 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { FilePen, Rows4 } from '@tamagui/lucide-icons';
+import { FilePen, Info, Rows4 } from '@tamagui/lucide-icons';
 import { Link, Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
 
@@ -27,10 +26,9 @@ export default function TabLayout() {
             <Link href="/modal" asChild>
               <Pressable>
                 {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
+                  <Info
                     size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
+                    color="$accentColor"
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}

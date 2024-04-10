@@ -1,6 +1,3 @@
-import { useColorScheme } from '@/components/useColorScheme';
-import environment from '@/relay/environment';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -8,7 +5,11 @@ import * as SplashScreen from 'expo-splash-screen';
 import { Suspense, useEffect } from 'react';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { TamaguiProvider } from 'tamagui';
+
 import { tamaguiConfig } from '../tamagui.config';
+
+import { useColorScheme } from '@/components/useColorScheme';
+import environment from '@/relay/environment';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -27,12 +28,13 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
-    ...FontAwesome.font,
   });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
   }, [error]);
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export default function RootLayout() {
 
   return (
     <RelayEnvironmentProvider environment={environment}>
-      <Suspense fallback={'loading...'}>
+      <Suspense fallback="loading...">
         <RootLayoutNav />
       </Suspense>
     </RelayEnvironmentProvider>

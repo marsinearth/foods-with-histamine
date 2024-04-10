@@ -1,5 +1,5 @@
 import { Info } from '@tamagui/lucide-icons';
-import { Dispatch, SetStateAction, useCallback, useMemo } from 'react';
+import { useCallback, useMemo, type Dispatch, type SetStateAction } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -54,7 +54,7 @@ function SeverityTag({ severity, histamine }: SeverityTagProps) {
 
   return (
     <View style={{ ...styles.tag, backgroundColor }}>
-      <Text fontSize="$1" fontWeight="bold" color="white">
+      <Text fontSize="$1" fontWeight="900" color="white">
         {label}
         {histamine ? ` (${histamine}mg/kg)` : ''}
       </Text>
