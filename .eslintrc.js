@@ -12,13 +12,15 @@ module.exports = {
       project: './tsconfig.json'
     }
   }],
-  plugins: ['react-hooks'],
+  plugins: ['react-hooks', '@ianvs/prettier-plugin-sort-imports'],
   env: {
     node: true,
   },
   rules: {
     // Ensures props and state inside functions are always up-to-date
     'react-hooks/exhaustive-deps': 'warn',
-    '@typescript-eslint/no-throw-literal': 'off'
+    '@typescript-eslint/no-throw-literal': 'off',
+    'prettier/prettier': ['error', { bracketSameLine: false }],
+    '@typescript-eslint/prefer-optional-chain': 'off'
   },
 };

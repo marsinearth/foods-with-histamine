@@ -154,6 +154,7 @@ type category implements Node {
     where: ingredients_bool_exp
   ): ingredientsConnection!
   name: String!
+  updated_at: timestamptz
 }
 
 """
@@ -181,6 +182,7 @@ input category_bool_exp {
   ingredients: ingredients_bool_exp
   ingredients_aggregate: ingredients_aggregate_bool_exp
   name: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
 }
 
 """
@@ -206,6 +208,7 @@ input category_insert_input {
   id: uuid
   ingredients: ingredients_arr_rel_insert_input
   name: String
+  updated_at: timestamptz
 }
 
 """
@@ -244,6 +247,7 @@ input category_order_by {
   id: order_by
   ingredients_aggregate: ingredients_aggregate_order_by
   name: order_by
+  updated_at: order_by
 }
 
 """primary key columns input for table: category"""
@@ -263,6 +267,9 @@ enum category_select_column {
 
   """column name"""
   name
+
+  """column name"""
+  updated_at
 }
 
 """
@@ -272,6 +279,7 @@ input category_set_input {
   created_at: timestamptz
   id: uuid
   name: String
+  updated_at: timestamptz
 }
 
 """
@@ -286,6 +294,9 @@ enum category_update_column {
 
   """column name"""
   name
+
+  """column name"""
+  updated_at
 }
 
 input category_updates {
@@ -311,6 +322,7 @@ type ingredients implements Node {
   id: ID!
   name: String!
   note: String
+  updated_at: timestamptz
 }
 
 """
@@ -420,6 +432,7 @@ input ingredients_bool_exp {
   id: uuid_comparison_exp
   name: String_comparison_exp
   note: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
 }
 
 """
@@ -460,6 +473,7 @@ input ingredients_insert_input {
   id: uuid
   name: String
   note: String
+  updated_at: timestamptz
 }
 
 """aggregate max on columns"""
@@ -473,6 +487,7 @@ type ingredients_max_fields {
   id: uuid
   name: String
   note: String
+  updated_at: timestamptz
 }
 
 """
@@ -488,6 +503,7 @@ input ingredients_max_order_by {
   id: order_by
   name: order_by
   note: order_by
+  updated_at: order_by
 }
 
 """aggregate min on columns"""
@@ -501,6 +517,7 @@ type ingredients_min_fields {
   id: uuid
   name: String
   note: String
+  updated_at: timestamptz
 }
 
 """
@@ -516,6 +533,7 @@ input ingredients_min_order_by {
   id: order_by
   name: order_by
   note: order_by
+  updated_at: order_by
 }
 
 """
@@ -548,6 +566,7 @@ input ingredients_order_by {
   id: order_by
   name: order_by
   note: order_by
+  updated_at: order_by
 }
 
 """primary key columns input for table: ingredients"""
@@ -579,6 +598,9 @@ enum ingredients_select_column {
 
   """column name"""
   note
+
+  """column name"""
+  updated_at
 }
 
 """
@@ -594,6 +616,7 @@ input ingredients_set_input {
   id: uuid
   name: String
   note: String
+  updated_at: timestamptz
 }
 
 """aggregate stddev on columns"""
@@ -684,6 +707,9 @@ enum ingredients_update_column {
 
   """column name"""
   note
+
+  """column name"""
+  updated_at
 }
 
 input ingredients_updates {

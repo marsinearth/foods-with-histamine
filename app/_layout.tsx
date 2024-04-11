@@ -2,7 +2,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { Suspense, useEffect } from 'react';
+import { useEffect } from 'react';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { TamaguiProvider } from 'tamagui';
 
@@ -49,9 +49,7 @@ export default function RootLayout() {
 
   return (
     <RelayEnvironmentProvider environment={environment}>
-      <Suspense fallback="loading...">
-        <RootLayoutNav />
-      </Suspense>
+      <RootLayoutNav />
     </RelayEnvironmentProvider>
   );
 }
@@ -64,6 +62,10 @@ function RootLayoutNav() {
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="search"
+            options={{ headerTitle: '검색, 분류 및 정렬', headerBackTitle: '리스트' }}
+          />
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         </Stack>
       </ThemeProvider>

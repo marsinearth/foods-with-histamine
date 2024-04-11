@@ -1,24 +1,22 @@
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import { Text } from 'tamagui';
+import { useQueryLoader } from 'react-relay';
 
-import FoodList from '@/components/FoodList';
-import type { TabsQuery } from '@/relay/__generated__/TabsQuery.graphql';
-
-const FoodListDataQuery = graphql`
-  query TabsQuery {
-    ...FoodListFragment
-  }
-`;
+import FoodList, { FoodListDataQuery } from '@/components/FoodList';
+import LoadingView from '@/components/LoadingView';
+import type { FoodListQuery } from '@/relay/__generated__/FoodListQuery.graphql';
 
 export default function ListScreen() {
-  const queryData = useLazyLoadQuery<TabsQuery>(FoodListDataQuery, {});
+  const [queryReference, loadQuery] = useQueryLoader<FoodListQuery>(FoodListDataQuery);
+
+  useEffect(() => {
+    loadQuery({});
+  }, [loadQuery]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Suspense fallback={<Text>Loading...</Text>}>
-        <FoodList queryData={queryData} />
+      <Suspense fallback={<LoadingView label="음식 리스트 로딩중..." />}>
+        {!!queryReference && <FoodList queryReference={queryReference} />}
       </Suspense>
     </SafeAreaView>
   );

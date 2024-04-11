@@ -3,7 +3,7 @@ module.exports = function (api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
-      ['relay', { artifactDirectory: './relay/__generated__' }],
+      ['relay', { artifactDirectory: 'relay/__generated__' }],
       [
         '@tamagui/babel-plugin',
         {
