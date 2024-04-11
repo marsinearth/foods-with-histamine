@@ -1,4 +1,4 @@
-import type { FormQuery } from '@/relay/__generated__/FormQuery.graphql';
+import type { searchQuery } from '@/relay/__generated__/searchQuery.graphql';
 import { extractUUID } from '@/utils/extractUUID';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eraser } from '@tamagui/lucide-icons';
@@ -9,13 +9,13 @@ import { StyleSheet } from 'react-native';
 import { PreloadedQuery, usePreloadedQuery, useRelayEnvironment } from 'react-relay';
 import { commitLocalUpdate, Environment, graphql } from 'relay-runtime';
 import { Button, Form, Spinner, XStack } from 'tamagui';
-import LoadingView from '../LoadingView';
+import LoadingView from '../../LoadingView';
+import TamaguiSelect from '../Select';
+import TamaguiTextInput from '../TextInput';
 import { searchFormSchema, type SearchFormValues } from './searchSchema';
-import TamaguiSelect from './Select';
-import TamaguiTextInput from './TextInput';
 
 type SearchFormProps = {
-  categoryQueryReference: PreloadedQuery<FormQuery>;
+  categoryQueryReference: PreloadedQuery<searchQuery>;
 };
 
 const HISTAMINE_SEVERITY_ORDER_BY_OPTIONS = [
@@ -30,7 +30,7 @@ const HISTAMINE_SEVERITY_ORDER_BY_OPTIONS = [
 ];
 
 export const CategoryListQuery = graphql`
-  query FormQuery {
+  query searchQuery {
     search_filter {
       search_term
       histamine_severity_order_by
@@ -74,7 +74,7 @@ const searchFormDefaultValues: SearchFormValues = {
 
 export default function SearchForm({ categoryQueryReference }: SearchFormProps) {
   const environment = useRelayEnvironment();
-  const formData = usePreloadedQuery<FormQuery>(CategoryListQuery, categoryQueryReference);
+  const formData = usePreloadedQuery<searchQuery>(CategoryListQuery, categoryQueryReference);
   const { category_connection, search_filter } = formData ?? {};
   const { canGoBack, back } = router;
 

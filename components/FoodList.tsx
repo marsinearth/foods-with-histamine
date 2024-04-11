@@ -10,9 +10,9 @@ import { FlatList, StyleSheet } from 'react-native';
 import { usePaginationFragment, usePreloadedQuery, type PreloadedQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import type { Writeable } from 'zod';
+import EmptyDataView from './EmptyData';
 import RenderListItem, { type RenderItemType } from './FoodListItem';
 import LoadingView from './LoadingView';
-import EmptyDataView from './search/EmptyData';
 
 type FoodListProps = {
   queryReference: PreloadedQuery<FoodListQuery>;

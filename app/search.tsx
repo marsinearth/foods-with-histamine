@@ -1,13 +1,13 @@
+import SearchForm, { CategoryListQuery } from '@/components/form/search';
 import LoadingView from '@/components/LoadingView';
-import SearchForm, { CategoryListQuery } from '@/components/search/Form';
-import type { FormQuery } from '@/relay/__generated__/FormQuery.graphql';
+import type { searchQuery } from '@/relay/__generated__/searchQuery.graphql';
 import { Suspense, useEffect } from 'react';
 import { Keyboard, StyleSheet } from 'react-native';
 import { useQueryLoader } from 'react-relay';
 import { View } from 'tamagui';
 
 export default function SearchPage() {
-  const [categoryQueryReference, loadQuery] = useQueryLoader<FormQuery>(CategoryListQuery);
+  const [categoryQueryReference, loadQuery] = useQueryLoader<searchQuery>(CategoryListQuery);
   // to make view keyboard hide onBlur
   const handleUnhandledTouches = () => {
     Keyboard.dismiss();
