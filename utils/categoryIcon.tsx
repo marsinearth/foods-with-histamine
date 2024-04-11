@@ -19,7 +19,7 @@ import {
   Wine,
 } from '@tamagui/lucide-icons';
 
-export const getCategoryIcon = (category: string) => {
+export const getCategoryIcon = (category?: string) => {
   switch (category) {
     case '콩과식물':
       return <Bean size="$1.5" />;

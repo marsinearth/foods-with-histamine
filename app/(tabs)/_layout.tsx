@@ -1,10 +1,9 @@
-import { FilePen, Info, Rows4 } from '@tamagui/lucide-icons';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
-
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import { FilePen, Rows4, Search } from '@tamagui/lucide-icons';
+import { Link, Tabs } from 'expo-router';
+import { Pressable } from 'react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -16,17 +15,18 @@ export default function TabLayout() {
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: '히스타민 함량 음식 리스트',
+          title: '히스타민 함유 음식 리스트',
           tabBarIcon: ({ color }) => <Rows4 color={color} size={28} style={{ marginBottom: -3 }} />,
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/search" asChild>
               <Pressable>
                 {({ pressed }) => (
-                  <Info
+                  <Search
                     size={25}
                     color="$accentColor"
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
