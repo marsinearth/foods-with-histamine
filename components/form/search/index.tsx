@@ -1,21 +1,21 @@
-import type { FormQuery } from '@/relay/__generated__/FormQuery.graphql';
+import type { searchQuery } from '@/relay/__generated__/searchQuery.graphql';
 import { extractUUID } from '@/utils/extractUUID';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eraser } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
-import { Suspense, useMemo } from 'react';
+import { Children, Suspense, useMemo } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 import { PreloadedQuery, usePreloadedQuery, useRelayEnvironment } from 'react-relay';
 import { commitLocalUpdate, Environment, graphql } from 'relay-runtime';
 import { Button, Form, Spinner, XStack } from 'tamagui';
-import LoadingView from '../LoadingView';
+import LoadingView from '../../LoadingView';
+import TamaguiSelect from '../Select';
+import TamaguiTextInput from '../TextInput';
 import { searchFormSchema, type SearchFormValues } from './searchSchema';
-import TamaguiSelect from './Select';
-import TamaguiTextInput from './TextInput';
 
 type SearchFormProps = {
-  categoryQueryReference: PreloadedQuery<FormQuery>;
+  categoryQueryReference: PreloadedQuery<searchQuery>;
 };
 
 const HISTAMINE_SEVERITY_ORDER_BY_OPTIONS = [
@@ -30,13 +30,13 @@ const HISTAMINE_SEVERITY_ORDER_BY_OPTIONS = [
 ];
 
 export const CategoryListQuery = graphql`
-  query FormQuery {
+  query searchQuery {
     search_filter {
       search_term
       histamine_severity_order_by
       category_filter
     }
-    category_connection(first: 100) {
+    category_connection {
       edges {
         node {
           id
@@ -74,7 +74,7 @@ const searchFormDefaultValues: SearchFormValues = {
 
 export default function SearchForm({ categoryQueryReference }: SearchFormProps) {
   const environment = useRelayEnvironment();
-  const formData = usePreloadedQuery<FormQuery>(CategoryListQuery, categoryQueryReference);
+  const formData = usePreloadedQuery<searchQuery>(CategoryListQuery, categoryQueryReference);
   const { category_connection, search_filter } = formData ?? {};
   const { canGoBack, back } = router;
 
@@ -87,10 +87,10 @@ export default function SearchForm({ categoryQueryReference }: SearchFormProps) 
   } = useForm<SearchFormValues>({
     resolver: zodResolver(searchFormSchema),
     defaultValues: searchFormDefaultValues,
-    values: search_filter as SearchFormValues,
+    values: search_filter as SearchFormValues | undefined,
   });
 
-  const selectedCategories = watch('category_filter');
+  const selectedCategories = watch('category_filter') ?? [];
 
   const onSubmit: SubmitHandler<SearchFormValues> = data => {
     if (canGoBack()) {
@@ -113,7 +113,6 @@ export default function SearchForm({ categoryQueryReference }: SearchFormProps) 
 
   return (
     <Form
-      flexDirection="column"
       alignItems="center"
       gap="$3"
       padding="$3"
@@ -142,10 +141,9 @@ export default function SearchForm({ categoryQueryReference }: SearchFormProps) 
       />
 
       <XStack gap="$2">
-        <Suspense fallback={<LoadingView label="분류 목록 로딩중..." />}>
-          {Array.from({ length: 3 }).map((_, i) => (
+        <Suspense fallback={<LoadingView label="분류 목록 불러오는 중..." />}>
+          {Children.map(Array.from({ length: 3 }), (_, i) => (
             <TamaguiSelect<SearchFormValues>
-              key={i}
               name={`category_filter.${i}`}
               control={control}
               options={categoryOptions}
@@ -168,7 +166,7 @@ export default function SearchForm({ categoryQueryReference }: SearchFormProps) 
         />
         <Form.Trigger asChild disabled={!isValid} theme={!isValid ? 'gray_alt1' : 'blue_active'}>
           <Button flexGrow={1} size="$6" iconAfter={isSubmitting ? () => <Spinner /> : undefined}>
-            Submit
+            적용
           </Button>
         </Form.Trigger>
       </XStack>

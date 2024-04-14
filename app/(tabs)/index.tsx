@@ -1,10 +1,10 @@
-import { Suspense, useEffect } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
-import { useQueryLoader } from 'react-relay';
-
 import FoodList, { FoodListDataQuery } from '@/components/FoodList';
 import LoadingView from '@/components/LoadingView';
 import type { FoodListQuery } from '@/relay/__generated__/FoodListQuery.graphql';
+import { Suspense, useEffect } from 'react';
+import { SafeAreaView, StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useQueryLoader } from 'react-relay';
 
 export default function ListScreen() {
   const [queryReference, loadQuery] = useQueryLoader<FoodListQuery>(FoodListDataQuery);
@@ -15,9 +15,19 @@ export default function ListScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Suspense fallback={<LoadingView label="음식 리스트 로딩중..." />}>
-        {!!queryReference && <FoodList queryReference={queryReference} />}
-      </Suspense>
+      <GestureHandlerRootView
+        style={{
+          flex: 1,
+          flexDirection: 'column',
+          alignItems: 'center',
+          marginVertical: 15,
+          width: '100%',
+        }}
+      >
+        <Suspense fallback={<LoadingView label="음식 리스트 불러오는 중..." />}>
+          {!!queryReference && <FoodList queryReference={queryReference} />}
+        </Suspense>
+      </GestureHandlerRootView>
     </SafeAreaView>
   );
 }
@@ -27,9 +37,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexGrow: 1,
     width: '100%',
-    flexDirection: 'column',
-    marginVertical: 15,
-    alignItems: 'center',
   },
   title: {
     fontSize: 20,

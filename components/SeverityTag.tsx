@@ -11,13 +11,13 @@ export default function SeverityTag({ severity, histamine }: SeverityTagProps) {
   const [label, backgroundColor] = useMemo(() => {
     switch (severity) {
       case 4:
-        return ['higher', 'firebrick'];
+        return ['과도', 'firebrick'];
       case 2:
-        return ['medium', 'goldenrod'];
+        return ['중간', 'goldenrod'];
       case 1:
-        return ['low', 'limegreen'];
+        return ['낮음', 'limegreen'];
       default:
-        return ['high', 'tomato'];
+        return ['높음', 'tomato'];
     }
   }, [severity]);
 

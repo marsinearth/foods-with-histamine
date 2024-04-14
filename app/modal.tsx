@@ -20,7 +20,7 @@ export default function ModalScreen() {
 
   return (
     <View style={styles.container}>
-      <Suspense fallback={<LoadingView label="음식 상세정보 로딩중..." />}>
+      <Suspense fallback={<LoadingView label="음식 상세정보 불러오는 중..." />}>
         {!!queryReference && <FoodDetail queryReference={queryReference} />}
       </Suspense>
       {/* Use a light status bar on iOS to account for the black space above the modal */}

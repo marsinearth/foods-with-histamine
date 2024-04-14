@@ -2,6 +2,7 @@ type SearchFilter {
   search_term: String
   histamine_severity_order_by: order_by
   category_filter: [uuid!]
+  current_connection_id: ID
 }
 
 extend type query_root {
