@@ -1,15 +1,14 @@
+import { useColorScheme } from '@/components/useColorScheme';
+import environment from '@/relay/environment';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { RootSiblingParent } from 'react-native-root-siblings';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { TamaguiProvider } from 'tamagui';
-
 import { tamaguiConfig } from '../tamagui.config';
-
-import { useColorScheme } from '@/components/useColorScheme';
-import environment from '@/relay/environment';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,7 +48,9 @@ export default function RootLayout() {
 
   return (
     <RelayEnvironmentProvider environment={environment}>
-      <RootLayoutNav />
+      <RootSiblingParent>
+        <RootLayoutNav />
+      </RootSiblingParent>
     </RelayEnvironmentProvider>
   );
 }

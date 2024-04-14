@@ -7,8 +7,13 @@ import type {
 } from '@/relay/__generated__/FoodListRefetchQuery.graphql';
 import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
-import { usePaginationFragment, usePreloadedQuery, type PreloadedQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import {
+  usePaginationFragment,
+  usePreloadedQuery,
+  useRelayEnvironment,
+  type PreloadedQuery,
+} from 'react-relay';
+import { commitLocalUpdate, graphql } from 'relay-runtime';
 import type { Writeable } from 'zod';
 import EmptyDataView from './EmptyData';
 import RenderListItem, { type RenderItemType } from './FoodListItem';
@@ -34,12 +39,16 @@ const FoodListPaginationFragment = graphql`
   @argumentDefinitions(
     count: { type: "Int", defaultValue: 30 }
     cursor: { type: "String" }
-    order_by: { type: "[ingredients_order_by!]", defaultValue: [{ histamine_severity_num: asc }] }
+    order_by: {
+      type: "[ingredients_order_by!]"
+      defaultValue: [{ histamine_severity_num: asc }, { name: asc }]
+    }
     where: { type: "ingredients_bool_exp" }
   )
   @refetchable(queryName: "FoodListRefetchQuery") {
     ingredients_connection(first: $count, after: $cursor, order_by: $order_by, where: $where)
       @connection(key: "FoodListPaginationFragment_ingredients_connection") {
+      __id
       edges {
         node {
           id
@@ -51,6 +60,7 @@ const FoodListPaginationFragment = graphql`
 `;
 
 export default function FoodList({ queryReference }: FoodListProps) {
+  const environment = useRelayEnvironment();
   const [selectedId, setSelectedId] = useState('');
   const foodListData = usePreloadedQuery<FoodListQuery>(FoodListDataQuery, queryReference);
   const { search_filter, ...queryRef } = foodListData ?? {};
@@ -58,7 +68,7 @@ export default function FoodList({ queryReference }: FoodListProps) {
     FoodListRefetchQuery,
     FoodListFragment$key
   >(FoodListPaginationFragment, queryRef);
-  const { edges = [] } = data?.ingredients_connection ?? {};
+  const { edges = [], __id: connectionId } = data?.ingredients_connection ?? {};
 
   const onEndReached = () => {
     if (hasNext) {
@@ -71,7 +81,10 @@ export default function FoodList({ queryReference }: FoodListProps) {
     if (search_filter) {
       const { search_term, histamine_severity_order_by, category_filter } = search_filter;
       const result: { order_by: ingredients_order_by[]; where: ingredients_bool_exp } = {
-        order_by: [{ histamine_severity_num: histamine_severity_order_by ?? 'asc' }],
+        order_by: [
+          { histamine_severity_num: histamine_severity_order_by ?? 'asc' },
+          { name: 'asc' },
+        ],
         where: { _and: [] },
       };
       const categories = category_filter?.reduce((acc, categoryId) => {
@@ -96,6 +109,23 @@ export default function FoodList({ queryReference }: FoodListProps) {
     }
   }, [refetch, search_filter]);
 
+  useEffect(() => {
+    // save current_connection_id to the local schema: search_filter for a reference for later mutation updater
+    commitLocalUpdate(environment, store => {
+      const queryClientRoot = store.getRoot();
+      if (queryClientRoot) {
+        const searchFilterRecord = queryClientRoot.getOrCreateLinkedRecord(
+          'search_filter',
+          'SearchFilter'
+        );
+        if (searchFilterRecord) {
+          searchFilterRecord.setValue(connectionId, 'current_connection_id');
+          queryClientRoot.setLinkedRecord(searchFilterRecord, 'search_filter');
+        }
+      }
+    });
+  }, [environment, connectionId]);
+
   return (
     <FlatList<RenderItemType>
       data={edges}
@@ -110,7 +140,7 @@ export default function FoodList({ queryReference }: FoodListProps) {
       style={styles.chartContainer}
       initialNumToRender={30}
       ListEmptyComponent={<EmptyDataView />}
-      ListFooterComponent={!hasNext ? null : <LoadingView label="추가 음식 로딩중..." />}
+      ListFooterComponent={!hasNext ? null : <LoadingView label="추가 음식 불러오는 중..." />}
     />
   );
 }

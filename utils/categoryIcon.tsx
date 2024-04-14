@@ -11,6 +11,7 @@ import {
   Milk,
   Nut,
   PiggyBank,
+  Pill,
   Pizza,
   Shell,
   Soup,
@@ -55,6 +56,8 @@ export const getCategoryIcon = (category?: string) => {
       return <Pizza size="$1.5" />;
     case '조미료':
       return <Beaker size="$1.5" />;
+    case '영양제':
+      return <Pill size="$1.5" />;
     default:
       return <Utensils size="$1.5" />;
   }

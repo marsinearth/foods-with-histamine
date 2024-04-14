@@ -4,7 +4,8 @@ import { getCategoryIcon } from '@/utils/categoryIcon';
 import { Info } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
 import { memo, useCallback, useMemo, type Dispatch, type SetStateAction } from 'react';
-import { Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { Animated, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { BorderlessButton, Swipeable } from 'react-native-gesture-handler';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { ListItem, Text, View } from 'tamagui';
@@ -21,6 +22,8 @@ type RenderListItemProps = RenderItemType & {
 type SubTitleRenderProps = SeverityTagProps & {
   note?: string | null;
 };
+
+type AnimatedInterpolation = ReturnType<Animated.Value['interpolate']>;
 
 const IngredientFragment = graphql`
   fragment FoodListItemFragment on ingredients {
@@ -63,25 +66,44 @@ const RenderListItem = ({ node, selectedId, setSelectedId }: RenderListItemProps
     router.push({ pathname: '/modal', params: { id } });
   }, [id]);
 
+  const renderRightActions = (
+    _progess: AnimatedInterpolation,
+    _dragX: AnimatedInterpolation,
+    swipeable: Swipeable
+  ) => {
+    const onpress = () => {
+      router.navigate({ pathname: '/mod', params: { id } });
+      swipeable.close();
+    };
+
+    return (
+      <BorderlessButton style={styles.borderlessButton} onPress={onpress}>
+        <Text color="$gray10">수정</Text>
+      </BorderlessButton>
+    );
+  };
+
   return (
-    <TouchableOpacity onPress={onPress}>
-      <ListItem
-        icon={getCategoryIcon(categoryName)}
-        iconAfter={
-          note ? (
-            <Pressable style={styles.listItemInfoIconContainer} onPress={onInfoPress}>
-              {({ pressed }) => <Info size="$1.5" style={{ opacity: pressed ? 0.5 : 1 }} />}
-            </Pressable>
-          ) : undefined
-        }
-        title={name}
-        subTitle={
-          <SubTitleRender severity={histamine_severity_num} histamine={histamine} note={note} />
-        }
-        style={styles.listItem}
-        backgroundColor={selected ? '$green5' : undefined}
-      />
-    </TouchableOpacity>
+    <Swipeable renderRightActions={renderRightActions}>
+      <TouchableOpacity onPress={onPress}>
+        <ListItem
+          icon={getCategoryIcon(categoryName)}
+          iconAfter={
+            note ? (
+              <Pressable style={styles.listItemInfoIconContainer} onPress={onInfoPress}>
+                {({ pressed }) => <Info size="$1.5" style={{ opacity: pressed ? 0.5 : 1 }} />}
+              </Pressable>
+            ) : undefined
+          }
+          title={name}
+          subTitle={
+            <SubTitleRender severity={histamine_severity_num} histamine={histamine} note={note} />
+          }
+          style={styles.listItem}
+          backgroundColor={selected ? '$green5' : undefined}
+        />
+      </TouchableOpacity>
+    </Swipeable>
   );
 };
 
@@ -111,5 +133,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginLeft: 16,
+  },
+  borderlessButton: {
+    width: 80,
+    overflow: 'hidden',
+    marginTop: 5,
+    height: 60,
+    paddingRight: 30,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
 });

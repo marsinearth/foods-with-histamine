@@ -20,7 +20,7 @@ export default function SearchPage() {
 
   return (
     <View style={styles.container} onStartShouldSetResponder={handleUnhandledTouches}>
-      <Suspense fallback={<LoadingView label="분류 목록 로딩중..." />}>
+      <Suspense fallback={<LoadingView label="분류 목록 불러오는 중..." />}>
         {!!categoryQueryReference && <SearchForm categoryQueryReference={categoryQueryReference} />}
       </Suspense>
     </View>

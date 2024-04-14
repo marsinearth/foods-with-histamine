@@ -44,7 +44,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <FilePen color={color} size={28} style={{ marginBottom: -3 }} />
           ),
+          // prevent retaining values on upsert form which prevents loading new values of the item previously modified
+          unmountOnBlur: true,
         }}
+        listeners={({ navigation }) => ({
+          // remove params.id to share the same page for insert/update
+          blur: () => navigation.setParams({ id: '' }),
+        })}
       />
     </Tabs>
   );
