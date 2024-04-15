@@ -15,6 +15,7 @@ module.exports = {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: true,
+      usesAppleSignIn: true,
       bundleIdentifier: 'devMars.foodsWithHistamine',
     },
     android: {
