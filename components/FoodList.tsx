@@ -5,8 +5,9 @@ import type {
   ingredients_bool_exp,
   ingredients_order_by,
 } from '@/relay/__generated__/FoodListRefetchQuery.graphql';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
 import {
   usePaginationFragment,
   usePreloadedQuery,
@@ -60,6 +61,7 @@ const FoodListPaginationFragment = graphql`
 `;
 
 export default function FoodList({ queryReference }: FoodListProps) {
+  const currSwipeableRef = useRef<Swipeable>(null);
   const environment = useRelayEnvironment();
   const [selectedId, setSelectedId] = useState('');
   const foodListData = usePreloadedQuery<FoodListQuery>(FoodListDataQuery, queryReference);
@@ -132,7 +134,12 @@ export default function FoodList({ queryReference }: FoodListProps) {
       extraData={selectedId}
       keyExtractor={({ node }) => node.id}
       renderItem={({ item }) => (
-        <RenderListItem {...item} selectedId={selectedId} setSelectedId={setSelectedId} />
+        <RenderListItem
+          {...item}
+          ref={currSwipeableRef}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+        />
       )}
       onEndReached={onEndReached}
       refreshing={isLoadingNext}

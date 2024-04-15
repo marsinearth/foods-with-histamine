@@ -3,7 +3,16 @@ import type { FoodListItemFragment$key } from '@/relay/__generated__/FoodListIte
 import { getCategoryIcon } from '@/utils/categoryIcon';
 import { Info } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
-import { memo, useCallback, useMemo, type Dispatch, type SetStateAction } from 'react';
+import {
+  forwardRef,
+  memo,
+  useCallback,
+  useMemo,
+  useRef,
+  type Dispatch,
+  type MutableRefObject,
+  type SetStateAction,
+} from 'react';
 import { Animated, StyleSheet, TouchableOpacity } from 'react-native';
 import { BorderlessButton, Swipeable } from 'react-native-gesture-handler';
 import { useFragment } from 'react-relay';
@@ -50,74 +59,95 @@ function SubTitleRender({ severity, histamine, note }: SubTitleRenderProps) {
   );
 }
 
-const RenderListItem = ({ node, selectedId, setSelectedId }: RenderListItemProps) => {
-  const ingredient = useFragment<FoodListItemFragment$key>(IngredientFragment, node);
-  const { id, category, name, histamine, histamine_severity_num, note } = ingredient ?? {};
-  const { name: categoryName = '' } = category ?? {};
+const RenderListItem = forwardRef<Swipeable, RenderListItemProps>(
+  ({ node, selectedId, setSelectedId }, prevRef) => {
+    const swipeRef = useRef<Swipeable>(null);
+    const ingredient = useFragment<FoodListItemFragment$key>(IngredientFragment, node);
+    const { id, category, name, histamine, histamine_severity_num, note } = ingredient ?? {};
+    const { name: categoryName = '' } = category ?? {};
 
-  const selected = useMemo(() => selectedId === node.id, [node, selectedId]);
+    const selected = useMemo(() => selectedId === node.id, [node, selectedId]);
 
-  const onPress = useCallback(() => {
-    setSelectedId(selected ? '' : node.id);
-  }, [setSelectedId, node, selected]);
+    const onPress = useCallback(() => {
+      setSelectedId(selected ? '' : node.id);
+    }, [setSelectedId, node, selected]);
 
-  const onInfoPress = useCallback(() => {
-    router.push({ pathname: '/modal', params: { id } });
-  }, [id]);
+    const onInfoPress = useCallback(() => {
+      router.push({ pathname: '/modal', params: { id } });
+    }, [id]);
 
-  const renderRightActions = (
-    _progess: AnimatedInterpolation,
-    _dragX: AnimatedInterpolation,
-    swipeable: Swipeable
-  ) => {
-    const onpress = () => {
-      router.navigate({ pathname: '/mod', params: { id } });
-      swipeable.close();
+    const handleSwipeableOpen = () => {
+      (prevRef as MutableRefObject<Swipeable | null>).current = swipeRef.current;
+    };
+
+    const handleSwipeableWillOpen = () => {
+      if (
+        (prevRef as MutableRefObject<Swipeable | null>)?.current &&
+        (prevRef as MutableRefObject<Swipeable | null>).current !== swipeRef.current
+      ) {
+        (prevRef as MutableRefObject<Swipeable | null>).current?.close();
+      }
+    };
+
+    const renderRightActions = (
+      _progess: AnimatedInterpolation,
+      _dragX: AnimatedInterpolation,
+      swipeable: Swipeable
+    ) => {
+      const onpress = () => {
+        router.navigate({ pathname: '/mod', params: { id } });
+        swipeable.close();
+      };
+
+      return (
+        <BorderlessButton
+          onPress={onpress}
+          style={{
+            width: 80,
+            overflow: 'hidden',
+            height: 70,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Text color="$gray10">수정</Text>
+        </BorderlessButton>
+      );
     };
 
     return (
-      <BorderlessButton
-        onPress={onpress}
-        style={{
-          width: 80,
-          overflow: 'hidden',
-          height: 70,
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
+      <Swipeable
+        ref={swipeRef}
+        onSwipeableOpen={handleSwipeableOpen}
+        onSwipeableWillOpen={handleSwipeableWillOpen}
+        renderRightActions={renderRightActions}
       >
-        <Text color="$gray10">수정</Text>
-      </BorderlessButton>
+        <TouchableOpacity onPress={onPress}>
+          <ListItem
+            icon={getCategoryIcon(categoryName)}
+            iconAfter={
+              note ? (
+                <TouchableOpacity
+                  onPress={onInfoPress}
+                  style={{ paddingVertical: 6, paddingHorizontal: 16 }}
+                >
+                  <Info size="$1.5" />
+                </TouchableOpacity>
+              ) : undefined
+            }
+            title={name}
+            subTitle={
+              <SubTitleRender severity={histamine_severity_num} histamine={histamine} note={note} />
+            }
+            style={styles.listItem}
+            backgroundColor={selected ? '$green5' : undefined}
+          />
+        </TouchableOpacity>
+      </Swipeable>
     );
-  };
-
-  return (
-    <Swipeable renderRightActions={renderRightActions}>
-      <TouchableOpacity onPress={onPress}>
-        <ListItem
-          icon={getCategoryIcon(categoryName)}
-          iconAfter={
-            note ? (
-              <TouchableOpacity
-                onPress={onInfoPress}
-                style={{ paddingVertical: 6, paddingHorizontal: 16 }}
-              >
-                <Info size="$1.5" />
-              </TouchableOpacity>
-            ) : undefined
-          }
-          title={name}
-          subTitle={
-            <SubTitleRender severity={histamine_severity_num} histamine={histamine} note={note} />
-          }
-          style={styles.listItem}
-          backgroundColor={selected ? '$green5' : undefined}
-        />
-      </TouchableOpacity>
-    </Swipeable>
-  );
-};
+  }
+);
 
 export default memo(RenderListItem);
 

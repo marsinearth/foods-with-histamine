@@ -158,7 +158,7 @@ export default function UpsertForm({ foundItem }: UpsertFormProps) {
         object,
         on_conflict: { constraint: 'ingredients_pkey', update_columns },
       },
-      updater: upsertMutationUpdater(search_filter),
+      updater: !node ? upsertMutationUpdater(search_filter) : undefined,
       onCompleted: ({ insert_ingredients_one }, err) => {
         const { name } = insert_ingredients_one ?? {};
         let message = '';
