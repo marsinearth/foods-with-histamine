@@ -269,7 +269,7 @@ export default function UpsertForm({ foundItem }: UpsertFormProps) {
           icon={<Eraser size="$2" />}
           onPress={onReset}
         />
-        <Form.Trigger asChild disabled={disabled} theme={disabled ? 'gray_alt1' : 'blue_active'}>
+        <Form.Trigger asChild disabled={disabled} theme={disabled ? 'gray_active' : 'blue_active'}>
           <Button
             flexGrow={1}
             size="$6"

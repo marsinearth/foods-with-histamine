@@ -4,13 +4,12 @@ import { getCategoryIcon } from '@/utils/categoryIcon';
 import { Info } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
 import { memo, useCallback, useMemo, type Dispatch, type SetStateAction } from 'react';
-import { Animated, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { Animated, StyleSheet, TouchableOpacity } from 'react-native';
 import { BorderlessButton, Swipeable } from 'react-native-gesture-handler';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { ListItem, Text, View } from 'tamagui';
-import type { SeverityTagProps } from './SeverityTag';
-import SeverityTag from './SeverityTag';
+import SeverityTag, { type SeverityTagProps } from './SeverityTag';
 
 export type RenderItemType = FoodListFragment$data['ingredients_connection']['edges'][number];
 
@@ -40,9 +39,9 @@ const IngredientFragment = graphql`
 
 function SubTitleRender({ severity, histamine, note }: SubTitleRenderProps) {
   return (
-    <View style={styles.listItemSubtitle}>
+    <View flex={1} flexDirection="row" justifyContent="space-between" alignItems="center">
       <SeverityTag severity={severity} histamine={histamine} />
-      <View style={styles.noteContainer}>
+      <View flex={1} flexDirection="row" justifyContent="flex-end" marginLeft={16}>
         <Text fontSize="$2" numberOfLines={1} color="$color05" ellipse ellipsizeMode="tail">
           {note}
         </Text>
@@ -77,7 +76,17 @@ const RenderListItem = ({ node, selectedId, setSelectedId }: RenderListItemProps
     };
 
     return (
-      <BorderlessButton style={styles.borderlessButton} onPress={onpress}>
+      <BorderlessButton
+        onPress={onpress}
+        style={{
+          width: 80,
+          overflow: 'hidden',
+          height: 70,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <Text color="$gray10">수정</Text>
       </BorderlessButton>
     );
@@ -90,9 +99,12 @@ const RenderListItem = ({ node, selectedId, setSelectedId }: RenderListItemProps
           icon={getCategoryIcon(categoryName)}
           iconAfter={
             note ? (
-              <Pressable style={styles.listItemInfoIconContainer} onPress={onInfoPress}>
-                {({ pressed }) => <Info size="$1.5" style={{ opacity: pressed ? 0.5 : 1 }} />}
-              </Pressable>
+              <TouchableOpacity
+                onPress={onInfoPress}
+                style={{ paddingVertical: 6, paddingHorizontal: 16 }}
+              >
+                <Info size="$1.5" />
+              </TouchableOpacity>
             ) : undefined
           }
           title={name}
@@ -117,31 +129,5 @@ const styles = StyleSheet.create({
     paddingRight: 0,
     borderWidth: 1,
     marginTop: 2,
-  },
-  listItemSubtitle: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  listItemInfoIconContainer: {
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-  },
-  noteContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginLeft: 16,
-  },
-  borderlessButton: {
-    width: 80,
-    overflow: 'hidden',
-    marginTop: 5,
-    height: 60,
-    paddingRight: 30,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
   },
 });

@@ -4,7 +4,7 @@ import type { FoodDetailQuery } from '@/relay/__generated__/FoodDetailQuery.grap
 import { useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Suspense, useEffect } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform } from 'react-native';
 import { useQueryLoader } from 'react-relay';
 import { View } from 'tamagui';
 
@@ -19,7 +19,7 @@ export default function ModalScreen() {
   }, [loadQuery, id]);
 
   return (
-    <View style={styles.container}>
+    <View flex={1} flexDirection="column" alignItems="center">
       <Suspense fallback={<LoadingView label="음식 상세정보 불러오는 중..." />}>
         {!!queryReference && <FoodDetail queryReference={queryReference} />}
       </Suspense>
@@ -28,20 +28,3 @@ export default function ModalScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
