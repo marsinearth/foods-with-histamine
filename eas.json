@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 7.8.1"
+    "version": ">= 7.8.1",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -13,20 +14,24 @@
       "ios": {
         "buildConfiguration": "Debug",
         "image": "latest"
-      }
+      },
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
       "env": {
         "APP_ICON": "./assets/icons/AppIcon@2x.png",
         "APP_NAME": "히스타민 식품군",
-      }
+      },
+      "channel": "preview"
     },
     "production": {
       "env": {
         "APP_ICON": "./assets/icons/AppIcon@2x.png",
-        "APP_NAME": "히스타민 식품군",
-      }
+        "APP_NAME": "히스타민 식품군"
+      },
+      "autoIncrement": true,
+      "channel": "production"
     }
   },
   "submit": {
