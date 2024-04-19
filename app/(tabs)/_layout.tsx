@@ -1,7 +1,7 @@
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
-import { FilePen, Rows4, Search } from '@tamagui/lucide-icons';
+import { FilePen, ListFilter, Rows4 } from '@tamagui/lucide-icons';
 import { Link, Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
 
@@ -26,7 +26,7 @@ export default function TabLayout() {
             <Link href="/search" asChild>
               <Pressable>
                 {({ pressed }) => (
-                  <Search
+                  <ListFilter
                     size={25}
                     color="$accentColor"
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
