@@ -2,7 +2,7 @@ module.exports = {
   expo: {
     name: process.env.APP_NAME || 'foods-with-histamine',
     slug: 'foods-with-histamine',
-    version: '1.0.0',
+    version: '1.0.1',
     orientation: 'portrait',
     icon: process.env.APP_ICON || './assets/images/icon.png',
     scheme: 'myapp',
