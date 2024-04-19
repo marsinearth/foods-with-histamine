@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
 export const upsertFormSchema = z.object({
-  name: z.string(),
+  name: z.string().trim().min(1),
   histamine: z.string().optional(),
   histamine_severity_num: z.string().default('3'),
-  categoryId: z.string(),
+  categoryId: z.string().trim().min(1),
   note: z.string().optional(),
 });
 
