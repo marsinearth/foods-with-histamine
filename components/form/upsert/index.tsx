@@ -195,7 +195,7 @@ export default function UpsertForm({ foundItem }: UpsertFormProps) {
     });
   };
 
-  const disabled = !isValid || !isDirty || isInFlight;
+  const disabled = !(isValid && isDirty) || isInFlight;
 
   return (
     <Form

@@ -37,7 +37,7 @@ const TamaguiSelect = <T extends FieldValues>({
   return (
     <Select onValueChange={onChange} {...rest} {...selectProps}>
       <Select.Trigger flexShrink={1} iconAfter={ChevronDown}>
-        <Select.Value placeholder={placeholder} />
+        <Select.Value ref={ref} placeholder={placeholder} />
       </Select.Trigger>
       <Adapt when="sm" platform="touch">
         <Sheet
