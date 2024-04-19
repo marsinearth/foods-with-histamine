@@ -36,7 +36,7 @@ export const CategoryListQuery = graphql`
       histamine_severity_order_by
       category_filter
     }
-    category_connection {
+    category_connection(order_by: [{ name: asc }]) {
       edges {
         node {
           id
